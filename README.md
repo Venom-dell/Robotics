@@ -4,6 +4,7 @@ Arduino-based control firmware for a joystick-driven robot with IMU-based PID st
 
 This repository contains embedded firmware that integrates USB joystick input, gyroscope feedback from an MPU6050 IMU, and real-time PID control to achieve stable and responsive motion control for a four-motor robotic platform.
 
+
 📁 Repository Contents
 
 ArduinoPID.ino
@@ -84,11 +85,13 @@ Dead-zone filtering is applied to reduce noise
 
 Joystick inputs are converted to polar coordinates for motion computation
 
+
 🧭 Yaw Estimation
 
 Z-axis angular rate from the MPU6050 gyroscope is integrated over time
 
 The time step (dt) is computed using microsecond-resolution timing
+
 
 🔁 PID Control
 
@@ -101,6 +104,7 @@ Integral (I): compensates for steady-state offset
 Derivative (D): improves damping and reduces overshoot
 
 The PID output contributes to the rotational component of motor commands.
+
 
 🔀 Motor Mixing (Holonomic Drive)
 

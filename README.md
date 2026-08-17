@@ -97,6 +97,52 @@ Where:
 * $\text{power}$ is the joystick magnitude.
 * $\text{rotation}$ includes PID-based yaw correction.
 
+## Kinematic Model (Cross-Omni Drive)
+
+The firmware calculates motor velocities using polar coordinates, where $p$ is the joystick magnitude (`power`) and $\theta$ is the joystick angle. These equations translate into a standard inverse kinematics matrix for a 45-degree X-drive configuration.
+
+### 1. Polar to Cartesian
+First, we define the Cartesian input vectors for the robot's target velocity:
+*   $x = p \cos(\theta)$ (Lateral/Strafing motion)
+*   $y = p \sin(\theta)$ (Forward/Backward motion)
+*   $\omega$ = Rotational command (PID output and manual rotation)
+
+### 2. Trigonometric Conversion
+The base polar equations for the motors are:
+$$v_1 = p \sin(\theta - 45^\circ) + \omega$$
+$$v_2 = p \sin(\theta + 45^\circ) - \omega$$
+$$v_3 = p \sin(\theta - 45^\circ) - \omega$$
+$$v_4 = p \sin(\theta + 45^\circ) + \omega$$
+
+Applying the angle sum/difference identities ($\sin(\theta \pm 45^\circ) = \sin(\theta)\cos(45^\circ) \pm \cos(\theta)\sin(45^\circ)$) and factoring out $\frac{\sqrt{2}}{2}$ yields:
+$$p \sin(\theta \pm 45^\circ) = \frac{\sqrt{2}}{2} (p \sin(\theta) \pm p \cos(\theta))$$
+$$p \sin(\theta \pm 45^\circ) = \frac{\sqrt{2}}{2} (y \pm x)$$
+
+### 3. Cartesian Equations
+Replacing the trigonometric functions with our Cartesian variables provides the linear algebraic equivalents:
+
+$$v_1 = -\frac{\sqrt{2}}{2}x + \frac{\sqrt{2}}{2}y + \omega$$
+
+$$v_2 = \frac{\sqrt{2}}{2}x + \frac{\sqrt{2}}{2}y - \omega$$
+
+$$v_3 = -\frac{\sqrt{2}}{2}x + \frac{\sqrt{2}}{2}y - \omega$$
+
+$$v_4 = \frac{\sqrt{2}}{2}x + \frac{\sqrt{2}}{2}y + \omega$$
+
+### 4. The Inverse Kinematics Matrix
+Extracting the coefficients forms the inverse kinematics matrix. This maps the desired chassis velocity vector $\begin{bmatrix} x & y & \omega \end{bmatrix}^T$ directly to the individual wheel velocities $\begin{bmatrix} v_1 & v_2 & v_3 & v_4 \end{bmatrix}^T$:
+
+$$
+\begin{bmatrix} v_1 \\ v_2 \\ v_3 \\ v_4 \end{bmatrix} = 
+\begin{bmatrix} 
+-\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} & 1 \\ 
+\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} & -1 \\ 
+-\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} & -1 \\ 
+\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} & 1 
+\end{bmatrix}
+\begin{bmatrix} x \\ y \\ \omega \end{bmatrix}
+$$
+
 ### Motor Pin Configuration
 
 As defined in the firmware, pin assignments may be modified to match specific hardware configurations:

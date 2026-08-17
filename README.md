@@ -1,6 +1,6 @@
-# Arduino-Based Mecanum Robot Controller
+# Arduino-Based cross omniwheel configuration Robot Controller
 
-Arduino-based control firmware for a joystick-driven robot with IMU-based PID stabilization and holonomic (mecanum) drive control.
+Arduino-based control firmware for a joystick-driven robot with IMU-based PID stabilization and holonomic drive control.
 
 This repository contains embedded firmware that integrates USB joystick input, gyroscope feedback from an MPU6050 IMU, and real-time PID control to achieve stable and responsive motion control for a four-motor robotic platform.
 
@@ -22,7 +22,7 @@ The firmware performs the following functions:
 * Estimates yaw angle by integrating gyroscope Z-axis data.
 * Computes PID control output for yaw stabilization.
 * Combines translational joystick input with rotational PID correction.
-* Drives four motors in a holonomic (mecanum) configuration.
+* Drives four motors in a holonomic configuration.
 * Outputs diagnostic data over the serial interface.
 
 ---
